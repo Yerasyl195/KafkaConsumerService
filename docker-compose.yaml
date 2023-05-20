@@ -3,27 +3,26 @@ services:
   app:
     image: aibaribray/kafkaconsumer:latest
     ports:
-      - "8180:8080"
+      - "8085:8080"
     depends_on:
       - database
       - kafka
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"   # Set the Kafka broker address
-      KAFKA_CONSUMER_GROUP: "parking-sensor-group"  # Set your desired consumer group
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092   # Set the Kafka broker address
+      - KAFKA_CONSUMER_GROUP=parking-sensor-group  # Set your desired consumer group
   database:
     image: postgres:latest
-    platform: linux/x86_64
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1402
-      POSTGRES_DB: parkingservice
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1402
+      - POSTGRES_DB=parkingservice
     ports:
-      - "5455:5432"
+      - "5435:5432"
   kafka:
     image: confluentinc/cp-kafka:latest   # Use an official Kafka image
     environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092  # Set the Kafka listener address
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181  # Set the ZooKeeper connection address
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092  # Set the Kafka listener address
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181  # Set the ZooKeeper connection address
     ports:
       - "9092:9092"  # Expose Kafka broker port
     depends_on:
@@ -31,4 +30,4 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest   # Use an official ZooKeeper image
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181  # Set the ZooKeeper client port
+      - ZOOKEEPER_CLIENT_PORT=2181  # Set the ZooKeeper client port
