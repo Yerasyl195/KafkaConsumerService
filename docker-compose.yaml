@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  app:
+    image: yerasyl/kafkaconsumer:latest
+    ports:
+      - "8085:8080"
+    depends_on:
+      - database
+  database:
+    image: postgres:latest
+    platform: linux/x86_64
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1402
+      POSTGRES_DB: user_service
+    ports:
+      - "5435:5432"

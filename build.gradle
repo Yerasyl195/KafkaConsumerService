@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
+
 }
 
 group = 'com.example'
@@ -24,6 +25,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+}
+
+bootBuildImage {
+    imageName = 'kafkaconsumer'
+    pullPolicy = 'IF_NOT_PRESENT'
 }
 
 tasks.named('test') {
