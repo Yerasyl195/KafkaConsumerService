@@ -103,4 +103,14 @@ public class ParkingSpotController {
         return parkingService.getNearbyAvailableSpots(latitude, longitude, radius);
     }
 
+
+    @PostMapping("/check-grpc/{id}")
+    public void checkGrpcConnection(@PathVariable Long id) {
+        // Обработка ошибки, если парковочное место не найдено
+        ParkingSpot parkingSpot = parkingService.getParkingSpotById(id);
+        if (parkingSpot == null || parkingSpot.getCurrentUserId() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking spot not found");
+        }
+        parkingService.checkGrpcConnection(parkingSpot);
+    }
 }

@@ -21,4 +21,6 @@ public interface ParkingService {
     List<ParkingSpot> getNearbyAvailableSpots(double latitude, double longitude, double radius);
 
     void deleteParkingSpot(Long id);
+
+    void checkGrpcConnection(ParkingSpot parkingSpot);
 }
