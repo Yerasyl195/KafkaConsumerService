@@ -1,8 +1,5 @@
 package com.example.kafkaconsumerservice.grpc;
 
-import com.example.kafkaconsumerservice.grpc.ParkingSpotOuterClass;
-import com.example.kafkaconsumerservice.grpc.ParkingSpotServiceGrpc;
-
 import io.grpc.stub.StreamObserver;
 import org.springframework.stereotype.Service;
 
