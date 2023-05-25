@@ -119,10 +119,26 @@ public class ParkingServiceImpl implements ParkingService {
     @Override
     public List<ParkingSpot> getNearbyPossibleSpots(double latitude, double longitude, double radius) {
         List<ParkingSpot> allSpots = parkingSpotRepository.findAll();
-        List<ParkingSpot> nearbyAvailableSpots = new ArrayList<>();
+        List<ParkingSpot> nearbyPossibleSpots = new ArrayList<>();
 
         for (ParkingSpot spot : allSpots) {
             if (spot.getCurrentUserId() == null && isOccupiedForDuration(spot.getStartTime())) {
+                double distance = calculateDistance(latitude, longitude, spot.getLatitude(), spot.getLongitude());
+                if (distance <= radius) {
+                    nearbyPossibleSpots.add(spot);
+                }
+            }
+        }
+
+        return nearbyPossibleSpots;
+    }
+    @Override
+    public List<ParkingSpot> getNearbyAvailableSpots(double latitude, double longitude, double radius) {
+        List<ParkingSpot> allSpots = parkingSpotRepository.findAll();
+        List<ParkingSpot> nearbyAvailableSpots = new ArrayList<>();
+
+        for (ParkingSpot spot : allSpots) {
+            if (!spot.getIsOccupied()) {
                 double distance = calculateDistance(latitude, longitude, spot.getLatitude(), spot.getLongitude());
                 if (distance <= radius) {
                     nearbyAvailableSpots.add(spot);

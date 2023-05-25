@@ -103,6 +103,10 @@ public class ParkingSpotController {
         return parkingService.getNearbyPossibleSpots(latitude, longitude, radius);
     }
 
+    @GetMapping("/available")
+    public List<ParkingSpot> getNearbyAvailableSpots(@RequestParam double latitude, @RequestParam double longitude, @RequestParam double radius) {
+        return parkingService.getNearbyPossibleSpots(latitude, longitude, radius);
+    }
 
     @PostMapping("/check-grpc/{id}")
     public void checkGrpcConnection(@PathVariable Long id) {
