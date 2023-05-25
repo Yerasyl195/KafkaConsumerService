@@ -1,11 +1,9 @@
 package com.example.kafkaconsumerservice.client;
 
 import com.example.kafkaconsumerservice.model.ParkingSpot;
-import com.example.kafkaconsumerservice.model.User;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 public class ParkingServiceClient {
     private static final String BASE_URL = "http://209.38.249.233:8080";

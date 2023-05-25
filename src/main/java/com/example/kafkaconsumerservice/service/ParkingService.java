@@ -18,7 +18,7 @@ public interface ParkingService {
     ParkingSpot startParkingSession(Long sensorId, Long userId, String currentCarNumber);
     ParkingSpot stopParkingSession(Long sensorId);
     //double calculateParkingFee(String id, LocalDateTime startTime, LocalDateTime endTime);
-    List<ParkingSpot> getNearbyAvailableSpots(double latitude, double longitude, double radius);
+    List<ParkingSpot> getNearbyPossibleSpots(double latitude, double longitude, double radius);
 
     void deleteParkingSpot(Long id);
 

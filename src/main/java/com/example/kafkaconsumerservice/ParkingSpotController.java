@@ -98,9 +98,9 @@ public class ParkingSpotController {
         return parkingService.stopParkingSession(id);
     }
 
-    @GetMapping("/available")
-    public List<ParkingSpot> getAvailableParkingSpots(@RequestParam double latitude, @RequestParam double longitude, @RequestParam double radius) {
-        return parkingService.getNearbyAvailableSpots(latitude, longitude, radius);
+    @GetMapping("/possible")
+    public List<ParkingSpot> getNearbyPossibleSpots(@RequestParam double latitude, @RequestParam double longitude, @RequestParam double radius) {
+        return parkingService.getNearbyPossibleSpots(latitude, longitude, radius);
     }
 
 

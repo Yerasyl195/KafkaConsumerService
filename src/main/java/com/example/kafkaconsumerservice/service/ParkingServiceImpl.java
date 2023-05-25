@@ -8,9 +8,7 @@ import com.example.kafkaconsumerservice.grpc.ParkingSpotServiceImpl;
 import com.example.kafkaconsumerservice.model.ParkingSession;
 import com.example.kafkaconsumerservice.respository.ParkingSpotRepository;
 import com.example.kafkaconsumerservice.model.ParkingSpot;
-import com.example.kafkaconsumerservice.socket.ParkingWebSocketHandler;
 import com.example.kafkaconsumerservice.violation.ParkingViolationService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -119,12 +117,12 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     @Override
-    public List<ParkingSpot> getNearbyAvailableSpots(double latitude, double longitude, double radius) {
+    public List<ParkingSpot> getNearbyPossibleSpots(double latitude, double longitude, double radius) {
         List<ParkingSpot> allSpots = parkingSpotRepository.findAll();
         List<ParkingSpot> nearbyAvailableSpots = new ArrayList<>();
 
         for (ParkingSpot spot : allSpots) {
-            if (!spot.getIsOccupied()) {
+            if (spot.getCurrentUserId() == null && isOccupiedForDuration(spot.getStartTime())) {
                 double distance = calculateDistance(latitude, longitude, spot.getLatitude(), spot.getLongitude());
                 if (distance <= radius) {
                     nearbyAvailableSpots.add(spot);
@@ -133,6 +131,26 @@ public class ParkingServiceImpl implements ParkingService {
         }
 
         return nearbyAvailableSpots;
+    }
+    private boolean isOccupiedForDuration(LocalDateTime startTime) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime occupiedUntilTime = startTime.plusMinutes(10);
+        return currentTime.isBefore(occupiedUntilTime);
+    }
+
+    private static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double earthRadius = 6371e3; // радиус Земли в метрах
+        double lat1Radians = Math.toRadians(lat1);
+        double lat2Radians = Math.toRadians(lat2);
+        double deltaLat = Math.toRadians(lat2 - lat1);
+        double deltaLon = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                Math.cos(lat1Radians) * Math.cos(lat2Radians) *
+                        Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return earthRadius * c;
     }
 
     @Override
@@ -172,20 +190,7 @@ public class ParkingServiceImpl implements ParkingService {
         return grpcParkingSpot;
     }
 
-    private static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        double earthRadius = 6371e3; // радиус Земли в метрах
-        double lat1Radians = Math.toRadians(lat1);
-        double lat2Radians = Math.toRadians(lat2);
-        double deltaLat = Math.toRadians(lat2 - lat1);
-        double deltaLon = Math.toRadians(lon2 - lon1);
 
-        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                Math.cos(lat1Radians) * Math.cos(lat2Radians) *
-                        Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return earthRadius * c;
-    }
     @Scheduled(fixedDelay = 60 * 1000) // Каждую минуту
     public void checkForSpotViolations() { // проверка занятости
         List<ParkingSpot> parkingSpots = getAllParkingSpots();
@@ -227,24 +232,3 @@ public class ParkingServiceImpl implements ParkingService {
         }
     }
 }
-
-//    @Override
-//    public ParkingSpot updateParkingSpotStatus(String id, boolean isOccupied) {
-//        ParkingSpot parkingSpot = parkingSpotRepository.findById(Long.valueOf(id)).orElse(null);
-//
-//        if (parkingSpot != null) {
-//            parkingSpot.setOccupied(isOccupied);
-//            //parkingSpot.(LocalDateTime.now());
-//            return parkingSpotRepository.save(parkingSpot);
-//        }
-//        return null;
-//    }
-
-//    @Override
-//    public double calculateParkingFee(String id, LocalDateTime startTime, LocalDateTime endTime) {
-//        // Реализуйте расчет стоимости парковки в зависимости от времени начала и окончания.
-//        // Например, вы можете использовать фиксированную ставку за час.
-//        double hourlyRate = 2.0;
-//        long parkingDuration = Duration.between(startTime, endTime).toHours();
-//        return hourlyRate * parkingDuration;
-//    }
