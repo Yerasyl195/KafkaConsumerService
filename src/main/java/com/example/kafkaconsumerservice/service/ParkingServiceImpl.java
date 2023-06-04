@@ -83,10 +83,6 @@ public class ParkingServiceImpl implements ParkingService {
             parkingSpot.setEndTime(LocalDateTime.now());
             ParkingServiceClient client = new ParkingServiceClient();
             client.addParkingHistory(parkingSpot);
-            //parkingSpotWebSocketHandler.sendParkingSpotUpdate(objectMapper.writeValueAsString(parkingSpot));
-            //Set history
-            //reset all values
-            //сокет с историей парковок
             ParkingSession parkingSession = new ParkingSession(parkingSpot.getSpotNumber(),
                     parkingSpot.getStartTime(), parkingSpot.getEndTime(),
                     parkingSpot.getCurrentUserId(), parkingSpot.getCurrentCarNumber());
