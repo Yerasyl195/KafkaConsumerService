@@ -9,6 +9,7 @@ import com.example.kafkaconsumerservice.model.ParkingSession;
 import com.example.kafkaconsumerservice.respository.ParkingSpotRepository;
 import com.example.kafkaconsumerservice.model.ParkingSpot;
 import com.example.kafkaconsumerservice.violation.ParkingViolationService;
+import kz.aparking.parkingsession.ParkingSessionOuterClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -90,20 +91,20 @@ public class ParkingServiceImpl implements ParkingService {
             ParkingSession parkingSession = new ParkingSession(parkingSpot.getSpotNumber(),
                     parkingSpot.getStartTime(), parkingSpot.getEndTime(),
                     parkingSpot.getCurrentUserId(), parkingSpot.getCurrentCarNumber());
-            com.example.parking.ParkingSession grpcParkingSession = convertToGrpcParkingSession(parkingSession);
-            parkingSessionService.addParkingSession(grpcParkingSession);
+            ParkingSessionOuterClass.ParkingSession grpcParkingSession = convertToGrpcParkingSession(parkingSession);
+            parkingSessionService.addParkingSession(parkingSpot.getCurrentUserId(), grpcParkingSession);
         }
         parkingSpot.resetParkingOccupancy();
         return parkingSpotRepository.save(parkingSpot);
     }
-    private com.example.parking.ParkingSession convertToGrpcParkingSession(ParkingSession parkingSession) {
+    private ParkingSessionOuterClass.ParkingSession convertToGrpcParkingSession(ParkingSession parkingSession) {
         // Преобразование java.time.LocalDateTime в строку формата ISO-8601
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         String startTime = parkingSession.getStartTime() != null ? parkingSession.getStartTime().format(formatter) : "";
         String endTime = parkingSession.getEndTime() != null ? parkingSession.getEndTime().format(formatter) : "";
 
         // Здесь преобразуйте parkingSession в ParkingSessionProto.ParkingSession
-        com.example.parking.ParkingSession grpcParkingSession = com.example.parking.ParkingSession.newBuilder()
+        ParkingSessionOuterClass.ParkingSession grpcParkingSession = ParkingSessionOuterClass.ParkingSession.newBuilder()
                 .setParkingSpotNumber(parkingSession.getParkingSpotNumber())
                 .setStartTime(startTime)
                 .setEndTime(endTime)
@@ -179,7 +180,7 @@ public class ParkingServiceImpl implements ParkingService {
     @Override
     public void checkGrpcConnection(ParkingSpot parkingSpot) {
         ParkingSpotOuterClass.ParkingSpot grpcParkingSpot = convertToGrpcParkingSpot(parkingSpot);
-        parkingSpotServiceImpl.addParkingSpot(grpcParkingSpot);
+        //parkingSpotServiceImpl.addParkingSpot(grpcParkingSpot);
     }
     private ParkingSpotOuterClass.ParkingSpot convertToGrpcParkingSpot(ParkingSpot parkingSpot) {
         // Преобразование java.time.LocalDateTime в строку формата ISO-8601

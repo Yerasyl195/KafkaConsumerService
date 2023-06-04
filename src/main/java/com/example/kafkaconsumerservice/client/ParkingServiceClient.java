@@ -67,7 +67,7 @@ public class ParkingServiceClient {
     }
 
     public void addParkingHistory(ParkingSpot parkingSpot) {
-        String url = BASE_URL + "/users/history/" + parkingSpot.getCurrentUserId();
+        String url = BASE_URL + "/users/add/history/" + parkingSpot.getCurrentUserId();
         double price = (parkingSpot.getEndTime().getMinute() - parkingSpot.getStartTime().getMinute())*100/60;
 
         if(parkingSpot.getCurrentUserId() == null){

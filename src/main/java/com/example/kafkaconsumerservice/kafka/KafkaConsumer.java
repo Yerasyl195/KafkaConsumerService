@@ -66,6 +66,5 @@ public class KafkaConsumer {
 
         return grpcParkingSpot;
     }
-
 }
 
